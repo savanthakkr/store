@@ -8,36 +8,36 @@ const UpdateProduct = () => {
   const navigate = useNavigate();
 
   const token = localStorage.getItem('accessToken');
-  const bookId = localStorage.getItem('accessBookId');
+  // const bookId = localStorage.getItem('accessBookId');
 
  
 
-  const [bookData, setBookData] = useState({});
+  const [productData, setproductData] = useState({});
 
   useEffect(() => {
-    const fetchBookData = async () => {
+    const fetchproductData = async () => {
   
       try {
-        const response = await fetch(`http://localhost:5000/getBookById/${bookId}`, {
+        const response = await fetch(`http://localhost:5000/api/productById/${id}`, {
           headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: token
           }
         });
         const data = await response.json();
-        setBookData(data.data[0]);
+        setproductData(data.data[0]);
         console.log(data)
       } catch (error) {
         console.error('Error fetching product data:', error);
       }
     };
-    fetchBookData();
-  }, [bookId]);
+    fetchproductData();
+  }, [id]);
 
 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setBookData({ ...bookData, [name]: value });
+    setproductData({ ...productData, [name]: value });
   };
 
 
@@ -47,20 +47,20 @@ const UpdateProduct = () => {
     try {
       const config = {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: token,
         },
       };
 
       const xhr = new XMLHttpRequest();
-      xhr.open('PUT', `http://localhost:5000/updateBook/${bookData.id}`, true);
-      xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+      xhr.open('PUT', `http://localhost:5000/api/updateProduct/${productData.id}`, true);
+      xhr.setRequestHeader('Authorization', token);
       xhr.setRequestHeader('Content-Type', 'application/json');
 
       xhr.onload = () => {
         if (xhr.status === 200) {
           const response = JSON.parse(xhr.responseText);
           console.log(response.data);
-          navigate('/allBooks');
+          navigate('/allProducts');
         } else {
           console.error('Error updating product:', xhr.statusText);
         }
@@ -70,7 +70,7 @@ const UpdateProduct = () => {
         console.error('Error updating product:', xhr.statusText);
       };
 
-      xhr.send(JSON.stringify(bookData));
+      xhr.send(JSON.stringify(productData));
     } catch (error) {
       console.error('Error updating product:', error);
     }
@@ -82,43 +82,43 @@ const UpdateProduct = () => {
         <h2>Update product</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
-            <label htmlFor="book_id" className="form-label">
+            <label htmlFor="id" className="form-label">
               ID  
             </label>
             <input
               type="text"
               className="form-control"
-              id="book_id"
-              name="book_id"
-              value={bookData.book_id || ''} 
+              id="id"
+              name="id"
+              value={productData.id || ''} 
               readOnly
             />
           </div>
           <div className="mb-3">
             <label htmlFor="title" className="form-label">Title</label>
-            <input type="text" className="form-control" id="title" name="title" value={bookData.title} onChange={handleChange} />
+            <input type="text" className="form-control" id="title" name="title" value={productData.name} onChange={handleChange} />
           </div>
           <div className="mb-3">
             <label htmlFor="description" className="form-label">Description</label>
-            <input type="text" className="form-control" id="description" name="description" value={bookData.description} onChange={handleChange} />
+            <input type="text" className="form-control" id="description" name="description" value={productData.description} onChange={handleChange} />
           </div>
           <div className="mb-3">
-            <label htmlFor="published_year" className="form-label">Published Year</label>
-            <input type="text" className="form-control" id="published_year" name="published_year" value={bookData.published_year} onChange={handleChange} />
+            <label htmlFor="categoryId" className="form-label">Published Year</label>
+            <input type="text" className="form-control" id="categoryId" name="categoryId" value={productData.categoryId} onChange={handleChange} />
           </div>
           <div className="mb-3">
-            <label htmlFor="quantity_available" className="form-label">Quantity Available</label>
-            <input type="text" className="form-control" id="quantity_available" name="quantity_available" value={bookData.quantity_available} onChange={handleChange} />
+            <label htmlFor="price" className="form-label">Quantity Available</label>
+            <input type="text" className="form-control" id="price" name="price" value={productData.price} onChange={handleChange} />
           </div>
           <div className="mb-3">
             <label htmlFor="author_id" className="form-label">Author ID</label>
-            <input type="text" className="form-control" id="author_id" name="author_id" value={bookData.author_id} onChange={handleChange} />
+            <input type="text" className="form-control" id="author_id" name="author_id" value={productData.images} onChange={handleChange} />
           </div>
           <div className="mb-3">
-            <label htmlFor="genre_id" className="form-label">Genre ID</label>
-            <input type="text" className="form-control" id="genre_id" name="genre_id" value={bookData.genre_id} onChange={handleChange} />
+            <label htmlFor="createdBy" className="form-label">Genre ID</label>
+            <input type="text" className="form-control" id="createdBy" name="createdBy" value={productData.createdBy } onChange={handleChange} />
           </div>
-          <button type="submit" className="btn btn-primary">Update Book</button>
+          <button type="submit" className="btn btn-primary">Update product</button>
         </form>
       </div>
     </div>
