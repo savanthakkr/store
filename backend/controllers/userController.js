@@ -3,8 +3,15 @@ const { sequelize } = require('../config/database');
 const { QueryTypes } = require('sequelize');
 const jwt = require('jsonwebtoken');
 
+
+
+
 const generateToken = (user) => {
-  const payload =  { email: user.email, password: user.password };
+  const payload =  { id: user.id,
+    email: user.email,
+    name: user.name,
+    userrole: user.userRole,
+  };
   return jwt.sign(payload, 'crud',{expiresIn: '24h'});
 };
 
@@ -12,14 +19,15 @@ const generateToken = (user) => {
 const registerUser = async (req, res) => {
   try {
 
-    const { firstName, lastName, email, password, gender, hobbies, userRole, profile_pic } = req.body;
+    const { firstName, lastName, email, password, gender, hobbies } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
+    console.log(req.body);
 
     
     const result = await sequelize.query(
-      'INSERT INTO users (firstName, lastName, email, password, gender, hobbies, userRole, profile_pic) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      'INSERT INTO users (firstName, lastName, email, password, gender, hobbies) VALUES (?, ?, ?, ?, ?, ?)',
       {
-        replacements: [firstName, lastName, email, hashedPassword, gender, hobbies, userRole, profile_pic],
+        replacements: [firstName, lastName, email, hashedPassword, gender, hobbies ],
         type: QueryTypes.INSERT
       }
     );
@@ -51,6 +59,7 @@ const loginUser = async (req, res) => {
 
       if (passwordMatch) {
         const token = generateToken(user);
+        
         return res.status(200).send({ message: 'Login success!', token: token });
       } else {
         return res.status(401).send({ message: 'Incorrect password!' });
@@ -64,7 +73,7 @@ const loginUser = async (req, res) => {
   }
 };
 
-
+// when user login success then genrate a token and this token is store peticuler user all detail 
 
 
 

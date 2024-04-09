@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const UpdateProduct = () => {
 
   const navigate = useNavigate();
+  const {id} = useParams();
 
   const token = localStorage.getItem('accessToken');
   // const bookId = localStorage.getItem('accessBookId');
@@ -20,11 +21,11 @@ const UpdateProduct = () => {
       try {
         const response = await fetch(`http://localhost:5000/api/productById/${id}`, {
           headers: {
-            Authorization: token
+            'Authorization': token
           }
         });
         const data = await response.json();
-        setproductData(data.data[0]);
+        setproductData(data);
         console.log(data)
       } catch (error) {
         console.error('Error fetching product data:', error);
@@ -32,6 +33,7 @@ const UpdateProduct = () => {
     };
     fetchproductData();
   }, [id]);
+
 
 
 
@@ -95,8 +97,8 @@ const UpdateProduct = () => {
             />
           </div>
           <div className="mb-3">
-            <label htmlFor="title" className="form-label">Title</label>
-            <input type="text" className="form-control" id="title" name="title" value={productData.name} onChange={handleChange} />
+            <label htmlFor="name" className="form-label">Name</label>
+            <input type="text" className="form-control" id="name" name="name" value={productData.name} onChange={handleChange} />
           </div>
           <div className="mb-3">
             <label htmlFor="description" className="form-label">Description</label>

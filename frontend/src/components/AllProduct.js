@@ -139,7 +139,7 @@ const ProductTable = () => {
                                     <img key={i} src={image} alt={`Product ${i}`} style={{ maxWidth: '100px' }} />
                                 ))}
                             </td>
-                            <td>{<button className="btn btn-primary btn-sm" onClick={() => navigate(`/edit/${product._id}`)}>Edit</button>}</td>
+                            <td>{<button className="btn btn-primary btn-sm" onClick={() => navigate(`/updateProduct/${product.id}`)}>Edit</button>}</td>
                             <td>{<button className="btn btn-danger btn-sm" onClick={() => handleDelete(product.id)}>Delete</button>}</td>
                         </tr>
                     ))}

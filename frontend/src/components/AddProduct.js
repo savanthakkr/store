@@ -11,6 +11,7 @@ const ProductForm = ({ onSubmit }) => {
         price: '',
         images: null
     });
+    const token = localStorage.getItem('accessToken');
 
     const navigate = useNavigate();
 
@@ -30,25 +31,32 @@ const ProductForm = ({ onSubmit }) => {
         navigate('/allProducts');
     }
 
+
+    // const jwt = require('jsonwebtoken');
+
+
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!formData.name || !formData.description || !formData.categoryId || !formData.price || !formData.images) {
+        if (!formData.name || !formData.description || !formData.categoryId || !formData.price || !formData.images ) {
             setErrorMessage('All fields are required!');
             return;
         }
         const { name, description, categoryId, price, images } = formData;
-
+ 
+    
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'http://localhost:5000/api/createProducts', true);
+        xhr.setRequestHeader('Authorization', token);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onreadystatechange = function () {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.status === 200) {
                     console.log('Product created successfully');
-
+    
                 } else {
                     console.error('Error creating product:', xhr.responseText);
-
+    
                 }
             }
         };
@@ -63,6 +71,11 @@ const ProductForm = ({ onSubmit }) => {
         );
         navigate('/allProducts');
     };
+
+
+    // i want to decode token and fetch user id from token and store in product table
+
+    // i want to fetch user id from genrated token 
 
     return (
         <Container>

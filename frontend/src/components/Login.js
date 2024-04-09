@@ -19,7 +19,7 @@ const Login = () => {
     })
 
     const handleRegister = () => {
-        navigate('/addUser');
+        navigate('/register');
     };
 
     const handleSubmit = async (e) => {

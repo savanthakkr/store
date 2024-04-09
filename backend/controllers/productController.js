@@ -1,15 +1,28 @@
 const { QueryTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
 
+const jwt = require('jsonwebtoken');
+const { verifyToken } = require('../middlewares/roleMiddleware');
+
+
 
 const createProduct = async (req, res) => {
+
+
+
   try {
+
+
     const { name, description, categoryId, price, images } = req.body;
+    const createdBy = req.user.id;
+    const userRole = req.user.userRole;
+    console.log(userRole);
+    console.log(createdBy);
 
     const result = await sequelize.query(
-      'INSERT INTO product (name, description, categoryId, price, images) VALUES (?, ?, ?, ?, ?)',
+      'INSERT INTO product (name, description, categoryId, price, images, createdBy, userRole) VALUES (?, ?, ?, ?, ?, ?, ?)',
       {
-        replacements: [name, description, categoryId, price, images],
+        replacements: [name, description, categoryId, price, images, createdBy, userRole],
         type: QueryTypes.INSERT
       }
     );
@@ -21,7 +34,10 @@ const createProduct = async (req, res) => {
   }
 };
 
-// Function to get all products
+
+
+
+
 const getAllProducts = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
