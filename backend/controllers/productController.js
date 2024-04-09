@@ -7,17 +7,11 @@ const { verifyToken } = require('../middlewares/roleMiddleware');
 
 
 const createProduct = async (req, res) => {
-
-
-
   try {
-
-
     const { name, description, categoryId, price, images } = req.body;
     const createdBy = req.user.id;
     const userRole = req.user.userRole;
-    console.log(userRole);
-    console.log(createdBy);
+    console.log('userRole:', userRole);
 
     const result = await sequelize.query(
       'INSERT INTO product (name, description, categoryId, price, images, createdBy, userRole) VALUES (?, ?, ?, ?, ?, ?, ?)',
@@ -35,7 +29,7 @@ const createProduct = async (req, res) => {
 };
 
 
-
+// Error creating product: Error: Positional replacement (?) 6 has no entry in the replacement map (replacements[6] is undefined).
 
 
 const getAllProducts = async (req, res) => {
@@ -91,15 +85,26 @@ const updateProduct = async (req, res) => {
   }
 };
 
-// Function to delete a product
 const deleteProduct = async (req, res) => {
   try {
+
+    const userRole = req.user.userRole;
+    console.log(userRole);
     const productId = req.params.id;
 
-    await sequelize.query(
-      'DELETE FROM product WHERE id = ?',
-      { replacements: [productId], type: QueryTypes.DELETE }
-    );
+    if (userRole === 'admin') {
+      sequelize.query(
+        'DELETE FROM product WHERE id = ?',
+        { replacements: [productId], type: QueryTypes.DELETE }
+      );
+    } else if (userRole === 'User') {
+      sequelize.query(
+        'DELETE FROM product WHERE id = ? AND userRole = ?',
+        { replacements: [productId, userRole], type: QueryTypes.DELETE }
+      );
+    } else {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
     res.json({ message: 'Product deleted successfully' });
   } catch (error) {
     console.error('Error deleting product:', error);
@@ -107,6 +112,35 @@ const deleteProduct = async (req, res) => {
   }
 };
 
+// const deleteProduct = async (req, res) => {
+//   try {
+//     const userRole = req.user.userRole;
+//     console.log(userRole);
+//     const productId = req.params.id;
+
+//     let query;
+
+//     if (userRole === 'admin') {
+//       await sequelize.query(
+//         'DELETE FROM product WHERE id = ?',
+//         { replacements: [productId], type: QueryTypes.DELETE }
+//       );
+//     } else if (userRole === 'User') {
+//       await sequelize.query(
+//         'DELETE FROM product WHERE id = ? AND userRole = ?',
+//         { replacements: [productId, userRole], type: QueryTypes.DELETE }
+//       );
+//     } else {
+//       return res.status(401).json({ error: 'Unauthorized' });
+//     }
+
+//     await sequelize.query(query);
+//     res.json({ message: 'Product deleted successfully' });
+//   } catch (error) {
+//     console.error('Error deleting product:', error);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// };
 
 const searchProducts = async (req, res) => {
   try {

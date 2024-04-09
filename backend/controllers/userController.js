@@ -10,7 +10,7 @@ const generateToken = (user) => {
   const payload =  { id: user.id,
     email: user.email,
     name: user.name,
-    userrole: user.userRole,
+    userRole: user.userRole,
   };
   return jwt.sign(payload, 'crud',{expiresIn: '24h'});
 };
