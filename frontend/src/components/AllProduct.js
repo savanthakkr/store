@@ -90,6 +90,9 @@ const ProductTable = () => {
         fetchProducts();
     }, []);
 
+
+
+
     return (
         <div className="container">
             <nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary mt-5 mb-3">
@@ -107,11 +110,11 @@ const ProductTable = () => {
                             <button className="btn btn-primary btn-sm mx-5" type="button" onClick={handleSearch}>Search</button>
                             <button className="btn btn-warning btn-sm mx-5" type="button" onClick={handleLogout}>Log Out</button>
                             <a class="navbar-brand mt-2 mt-lg-0" href='' onClick={handleImageClick}>
-                                <img
-                                    src=""
-                                    height="15"
-                                    alt="user"
-                                />
+                            <img
+                                src={''}
+                                alt="Profile Picture"
+                                style={{ width: '150px', height: '150px', borderRadius: '50%' }}
+                            />
                             </a>
                         </div>
                     </div>
@@ -145,12 +148,14 @@ const ProductTable = () => {
                     ))}
                 </tbody>
             </table>
-            <button className="btn btn-primary btn-sm" type="button" onClick={handleClick}>Add Product</button>
+            <div className='allproduct-button'>
+                <button className="btn btn-primary btn-sm" type="button" onClick={handleClick}>Add Product</button>
 
-            <button className="btn btn-primary btn-sm mx-5" type="button" onClick={handlePreviousPage} disabled={page === 1}>Previous Page</button>
-            <span className="mx-2">Page {page}</span>
+                <button className="btn btn-primary btn-sm mx-5" type="button" onClick={handlePreviousPage} disabled={page === 1}>Previous Page</button>
+                <span className="mx-2">Page {page}</span>
 
-            <button className="btn btn-primary btn-sm mx-5" type="button" onClick={handleNextPage} disabled={products.length < pageSize}>Next Page</button>
+                <button className="btn btn-primary btn-sm mx-5" type="button" onClick={handleNextPage} disabled={products.length < pageSize}>Next Page</button>
+            </div>
         </div>
     );
 };

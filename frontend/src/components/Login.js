@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Container, Form, Button, Alert } from 'react-bootstrap';
 import { useLocation, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import '../App.css'
 
 const Login = () => {
     const location = useLocation()
@@ -51,8 +52,7 @@ const Login = () => {
     };
 
     return (
-        <Container className="d-flex justify-content-center align-items-center vh-100">
-            <div className="login-form p-4 border rounded">
+        <div className="login-form ">
                 <h3 className="text-center">Login</h3>
                 {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
                 <Form onSubmit={handleSubmit} className="mt-3">
@@ -84,7 +84,6 @@ const Login = () => {
                     </Button>
                 </Form>
             </div>
-        </Container>
     );
 };
 

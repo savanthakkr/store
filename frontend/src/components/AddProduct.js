@@ -80,9 +80,7 @@ const ProductForm = ({ onSubmit }) => {
     return (
         <Container>
             <h1 className="text-center mt-5">Add Product</h1>
-            <Row className="justify-content-center mt-5">
-                <Col md={6}>
-                    {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
+            {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
                     <div>
                         <div className="form-group mx-3 mt-3">
                             <label htmlFor="name">Name</label>
@@ -107,23 +105,17 @@ const ProductForm = ({ onSubmit }) => {
                             </div>
                         </div>
                     </div>
-                </Col>
-            </Row>
-            <Row className="justify-content-between mt-3">
-                <Col>
-                    <button className="btn btn-primary" onClick={handleShowAllProducts}>
+            <div className='allproduct-button mt-5'>
+            <button className="btn btn-primary" onClick={handleShowAllProducts}>
                         Show All Products
                     </button>
-                </Col>
-                <Col className="text-right">
                     <button className="btn btn-danger mr-2 mx-3" onClick={handleCancel}>
                         Cancel
                     </button>
                     <button className="btn btn-primary mr-2 mx-3" onClick={handleSubmit}>
                         Submit
                     </button>
-                </Col>
-            </Row>
+            </div>
         </Container>
 
     );

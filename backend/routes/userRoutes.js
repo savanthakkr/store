@@ -15,6 +15,6 @@ router.post('/users/login', loginUser);
 router.get('/users/profile/:id',verifyToken, getUserProfile);
 
 // Update user profile
-router.put('/users/editProfile/:id',verifyToken, getImage);
+router.put('/users/editProfile/:id',verifyToken, getImage); 
 
 module.exports = router;

@@ -36,3 +36,13 @@
     transform: rotate(360deg);
   }
 }
+
+.login-form{
+  max-width: 500px;
+  margin: auto;
+}
+.allproduct-button{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}

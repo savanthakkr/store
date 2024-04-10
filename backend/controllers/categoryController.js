@@ -75,11 +75,24 @@ const updateCategory = async (req, res) => {
 const deleteCategory = async (req, res) => {
   try {
     const categoryId = req.params.id;
-    await sequelize.query(
-      'DELETE FROM categories WHERE id = ?',
-      { replacements: [categoryId], type: QueryTypes.DELETE }
-    );
-    res.json({ message: 'Category deleted successfully' });
+    console.log(categoryId);
+    const userId = req.user.id;
+    console.log(userId);
+
+    const [existingId] = await sequelize.query('SELECT * FROM category WHERE id = ?',
+    { replacements: [categoryId], type: QueryTypes.SELECT });
+
+    if(existingId){
+      await sequelize.query(
+        'DELETE FROM category WHERE id = ? AND createdBy = ?',
+        { replacements: [categoryId, userId], type: QueryTypes.DELETE }
+      );
+      res.json({ message: 'Category deleted successfully' });
+    }else{
+      res.json({ message: 'enter valid category id' });
+    }
+    
+    
   } catch (error) {
     console.error('Error deleting category:', error);
     res.status(500).json({ error: 'Internal server error' });
