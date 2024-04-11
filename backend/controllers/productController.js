@@ -1,22 +1,100 @@
 const { QueryTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
-
+const fs = require('fs');
+const path = require('path');
 const jwt = require('jsonwebtoken');
 const { verifyToken } = require('../middlewares/roleMiddleware');
 
 
 
+// const createProduct = async (req, res) => {
+//   try {
+//     const { name, description, categoryId, price } = req.body;
+//     const createdBy = req.user.id;
+//     const userRole = req.user.userRole;
+//     console.log('userRole:', userRole);
+
+//     const images = req.files ? Array.from(Object.values(req.files).flat()) : [];
+//     console.log(req.body);
+//     // const images = req.files.images
+
+//     const dirExists = fs.existsSync(`public/assets/product/`);
+
+//     if (!dirExists) {
+//       fs.mkdirSync(`public/assets/product/`, { recursive: true });
+//     }
+
+//     if (images == undefined || images == null) throw new Error("file not found!");
+    
+//     let savePath = `/public/assets/product/${Date.now()}.${images.name.split(".").pop()}`
+
+//     await new Promise((resolve, reject) => {
+//       images.mv(path.join(__dirname, ".." + savePath), async (err) => {
+//           if (err) return reject(err);
+
+//           const updateQuery = 'UPDATE book SET image = ? WHERE book_id = ?'
+//           await db.query(updateQuery, [[savePath], id]);
+//           resolve([savePath]);
+//       });
+//     });
+//     const result = await sequelize.query(
+//       'INSERT INTO product (name, description, categoryId, price, images, createdBy, userRole) VALUES (?, ?, ?, ?, ?, ?, ?)',
+//       {
+//         replacements: [name, description, categoryId, price, savePath, createdBy, userRole],
+//         type: QueryTypes.INSERT
+//       }
+//     );
+//     res.json({ message: 'Product created!', id: result[0] });
+
+    
+//   } catch (error) {
+//     console.error('Error creating product:', error);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// };
+
+
 const createProduct = async (req, res) => {
   try {
-    const { name, description, categoryId, price, images } = req.body;
+    const { name, description, categoryId, price } = req.body;
+    const images = req.files ? Array.from(Object.values(req.files).flat()) : [];
     const createdBy = req.user.id;
     const userRole = req.user.userRole;
-    console.log('userRole:', userRole);
+    console.log(userRole);
+    console.log(images)
+    
+    const dirExists = fs.existsSync(`public/assets/`);
+    if (!dirExists) {
+      fs.mkdirSync(`public/assets/`, { recursive: true });
+    }
 
+    // Array to store paths of uploaded images
+    let imagePaths = [];
+
+    // Upload each image and store its path
+    for (const image of images) {
+      if (!image || !image.name) {
+        throw new Error("Image or image name is undefined");
+      }
+
+    const savePath = `/public/assets/${Date.now()}.${image.name.split(".").pop()}`;
+
+      // Move the file to the destination
+    await new Promise((resolve, reject) => {
+      image.mv(path.join(__dirname, ".." + savePath), (err) => {
+          if (err) {
+            reject(new Error("Error in uploading"));
+          } else {
+            imagePaths.push(savePath);
+            resolve();
+          }
+        });
+      });
+    }
     const result = await sequelize.query(
       'INSERT INTO product (name, description, categoryId, price, images, createdBy, userRole) VALUES (?, ?, ?, ?, ?, ?, ?)',
       {
-        replacements: [name, description, categoryId, price, images, createdBy, userRole],
+        replacements: [name, description, categoryId, price, imagePaths.join(','), createdBy, userRole],
         type: QueryTypes.INSERT
       }
     );
@@ -89,17 +167,18 @@ const deleteProduct = async (req, res) => {
   try {
 
     const userRole = req.user.userRole;
+    const userId = req.user.userId;
     console.log(userRole);
     const productId = req.params.id;
 
-    if (userRole === 'admin') {
+    if (userRole === 'Admin') {
       sequelize.query(
-        'DELETE FROM product WHERE id = ?',
+        'DELETE FROM product WHERE id = ? ',
         { replacements: [productId], type: QueryTypes.DELETE }
       );
     } else if (userRole === 'User') {
       sequelize.query(
-        'DELETE FROM product WHERE id = ? AND userRole = ?',
+        'DELETE FROM product WHERE id = ? AND userRole = ? ',
         { replacements: [productId, userRole], type: QueryTypes.DELETE }
       );
     } else {

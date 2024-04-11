@@ -105,19 +105,19 @@ const UpdateProduct = () => {
             <input type="text" className="form-control" id="description" name="description" value={productData.description} onChange={handleChange} />
           </div>
           <div className="mb-3">
-            <label htmlFor="categoryId" className="form-label">Published Year</label>
+            <label htmlFor="categoryId" className="form-label">category Id</label>
             <input type="text" className="form-control" id="categoryId" name="categoryId" value={productData.categoryId} onChange={handleChange} />
           </div>
           <div className="mb-3">
-            <label htmlFor="price" className="form-label">Quantity Available</label>
+            <label htmlFor="price" className="form-label">price</label>
             <input type="text" className="form-control" id="price" name="price" value={productData.price} onChange={handleChange} />
           </div>
           <div className="mb-3">
-            <label htmlFor="author_id" className="form-label">Author ID</label>
+            <label htmlFor="author_id" className="form-label">images</label>
             <input type="text" className="form-control" id="author_id" name="author_id" value={productData.images} onChange={handleChange} />
           </div>
           <div className="mb-3">
-            <label htmlFor="createdBy" className="form-label">Genre ID</label>
+            <label htmlFor="createdBy" className="form-label">created By</label>
             <input type="text" className="form-control" id="createdBy" name="createdBy" value={productData.createdBy } onChange={handleChange} />
           </div>
           <button type="submit" className="btn btn-primary">Update product</button>

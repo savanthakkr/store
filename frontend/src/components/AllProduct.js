@@ -2,16 +2,44 @@ import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
 import './component.css';
+import {BsSearch} from 'react-icons/bs'
 
 const ProductTable = () => {
     const [products, setProducts] = useState([]);
+    console.log(products);
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const token = localStorage.getItem('accessToken');
 
-    const handleSearch = (event) => {
-     navigate("/search");
-    };
+    // const handleSearch = (event) => {
+    // //  navigate("/search");
+    // };
+
+    const [searchVal, setSearchVal] = useState("");
+    function handleSearch() {
+        if (searchVal === "") { setProducts(products); return; }
+        const filterBySearch = products.filter((item) => {
+            // if (item.toLowerCase()
+            //     .includes(searchVal.toString().toLowerCase())) { return item; }
+        })
+        setProducts(filterBySearch);
+    }
+
+
+//     const filteredPersons = details.filter(
+//     person => {
+//       return (
+//         person
+//         .name
+//         .toLowerCase()
+//         .includes(searchField.toLowerCase()) ||
+//         person
+//         .email
+//         .toLowerCase()
+//         .includes(searchField.toLowerCase())
+//       );
+//     }
+//   );
 
     const navigate = useNavigate();
 
@@ -106,7 +134,8 @@ const ProductTable = () => {
 
                     <div class="d-flex align-items-center">
                         <div class="dropdown">
-
+                        <input onChange={e => setSearchVal(e.target.value)}>
+                        </input>
                             <button className="btn btn-primary btn-sm mx-5" type="button" onClick={handleSearch}>Search</button>
                             <button className="btn btn-warning btn-sm mx-5" type="button" onClick={handleLogout}>Log Out</button>
                             <a class="navbar-brand mt-2 mt-lg-0" href='' onClick={handleImageClick}>

@@ -9,7 +9,7 @@ const ProductForm = ({ onSubmit }) => {
         description: '',
         categoryId: '',
         price: '',
-        images: null
+        images: null,
     });
     const token = localStorage.getItem('accessToken');
 

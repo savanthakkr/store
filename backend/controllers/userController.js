@@ -8,7 +8,12 @@ const path = require('path');
 
 
 const generateToken = (user) => {
-  const payload = { email: user.email, password: user.password, id: user.id, profile_pic: user.profile_pic };
+  const payload = { email: user.email, 
+    password: user.password, 
+    id: user.id, 
+    profile_pic: user.profile_pic ,
+    userRole: user.userRole
+  };
   return jwt.sign(payload, 'crud', { expiresIn: '24h' });
 };
 
@@ -18,13 +23,17 @@ const registerUser = async (req, res) => {
   try {
 
     const { firstName, lastName, email, password, gender, hobbies} = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
 
+    console.log(req.files);
+    
     const profile_pic= req.files.profile_pic
 
     // if(profile_pic.length>1){
     //     throw new error('multiple file not allowed!')
     // }
+
+    
+    
 
     const dirExists = fs.existsSync(`public/assets/`);
 
@@ -33,13 +42,20 @@ const registerUser = async (req, res) => {
     }
 
     if (profile_pic == undefined || profile_pic == null) throw new Error("file not found!");
-
+    
     let savePath = `/public/assets/${Date.now()}.${profile_pic.name.split(".").pop()}`
+    
+    
+
     
     profile_pic.mv(path.join(__dirname, ".." + savePath), async (err) => {
       if (err) throw new Error("error in uploading")
 
+      
+
       else {
+        
+        const hashedPassword = await bcrypt.hash(password, 10);
         const result = await sequelize.query(
           'INSERT INTO users (firstName, lastName, email, password, gender, hobbies, profile_pic) VALUES (?, ?, ?, ?, ?, ?, ?)',
           {
