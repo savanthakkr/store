@@ -5,7 +5,7 @@ import './component.css';
 import axios from 'axios';
 import { BsSearch } from 'react-icons/bs';
 
-const ProductTable = () => {
+const Category = () => {
     const [products, setProducts] = useState([]);
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
@@ -253,4 +253,4 @@ const ProductTable = () => {
     );
 };
 
-export default ProductTable;
+export default Category;

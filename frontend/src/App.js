@@ -8,6 +8,7 @@ import Search from './components/Search';
 import AddCategory from './components/AddCategory';
 import UpdateProduct from './components/EditProduct';
 import Register from './components/Register';
+import Category from './components/category';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Route path="/addCategory" element={<AddCategory />} />
       <Route path="/updateProduct/:id" element={<UpdateProduct />} />
       <Route path="/register" element={<Register />} />
+      <Route path='/allCategory' element={<Category/>}/>
     </Routes>
   );
 }
