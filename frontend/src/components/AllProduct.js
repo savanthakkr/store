@@ -105,7 +105,7 @@ const ProductTable = () => {
 
                 const response = await axios.get(`http://localhost:5000/api/users/profile/${id}`, { headers });
                 setUser(response.data.user);
-                // console.log(user.profile_pic);
+                console.log(response.data.user);
 
             } catch (error) {
                 console.error('Error fetching user data:', error);
@@ -160,6 +160,7 @@ const ProductTable = () => {
                                 height="30"
                                 width="30"
                                 alt="user" />
+                                <p class="title product-title">{user.firstName}</p>
                         </div>
                     </div>
                 </div>

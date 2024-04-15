@@ -5,11 +5,14 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '../App.css'
 
+const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
 const Login = () => {
     const location = useLocation()
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [emailError, setEmailError] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(()=>{
@@ -31,9 +34,15 @@ const Login = () => {
             setErrorMessage('Please enter both email and password.');
             return;
         }
-         
+
+        // Check if email is valid
+        if (!EMAIL_REGEX.test(email)) {
+            setEmailError('Please enter a valid email address.');
+            return;
+        }
+
         try {
-            const response = await axios.post('http://localhost:5000/api/users/login    ', { email, password });
+            const response = await axios.post('http://localhost:5000/api/users/login', { email, password });
 
             if (response.status === 200) {
 
@@ -62,8 +71,12 @@ const Login = () => {
                             type="text"
                             placeholder="Enter your username"
                             value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            onChange={(e) => {
+                                setEmail(e.target.value);
+                                setEmailError('');
+                            }}
                         />
+                        {emailError && <Form.Text className="text-danger">{emailError}</Form.Text>}
                     </Form.Group>
 
                     <Form.Group controlId="formPassword">

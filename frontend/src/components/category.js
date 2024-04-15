@@ -6,7 +6,7 @@ import axios from 'axios';
 import { BsSearch } from 'react-icons/bs';
 
 const Category = () => {
-    const [products, setProducts] = useState([]);
+    const [category, setProducts] = useState([]);
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
@@ -44,11 +44,11 @@ const Category = () => {
 
     const handleDelete = (id) => {
         const xhr = new XMLHttpRequest();
-        xhr.open('DELETE', `http://localhost:5000/api/deleteProducts/${id}`);
+        xhr.open('DELETE', `http://localhost:5000/api/deleteCategory/${id}`);
         xhr.setRequestHeader('Authorization', token);
         xhr.onload = () => {
             if (xhr.status === 200) {
-                navigate('/allProducts');
+                navigate('/allCategory');
                 window.location.reload();
             } else {
                 console.error('Failed to delete the book');
@@ -62,7 +62,7 @@ const Category = () => {
     };
 
     useEffect(() => {
-        const fetchProducts = async () => {
+        const fetchCategory = async () => {
             try {
                 const token = localStorage.getItem('accessToken');
                 if (!token) {
@@ -70,14 +70,14 @@ const Category = () => {
                 }
 
                 const xhr = new XMLHttpRequest();
-                xhr.open('GET', 'http://localhost:5000/api/products', true);
+                xhr.open('GET', 'http://localhost:5000/api/allCategory', true);
                 xhr.setRequestHeader('Authorization', token);
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState === XMLHttpRequest.DONE) {
                         if (xhr.status === 200) {
                             const response = JSON.parse(xhr.responseText);
-                            setProducts(response.filter((product) => product.name.toLowerCase().includes(searchTerm.toLowerCase())));
-                            console.log(products.imagePath);
+                            setProducts(response.filter((category) => category.categoryName.toLowerCase().includes(searchTerm.toLowerCase())));
+                            console.log(category.imagePath);
                         } else {
                             console.error('Error fetching products:', xhr.statusText);
                         }
@@ -85,7 +85,7 @@ const Category = () => {
                 };
                 xhr.send();
             } catch (error) {
-                console.error('Error fetching products:', error);
+                console.error('Error fetching Category:', error);
             }
         };
 
@@ -104,7 +104,8 @@ const Category = () => {
                 };
 
                 const response = await axios.get(`http://localhost:5000/api/users/profile/${id}`, { headers });
-                setUser(response.data.user);
+                setUser(response);
+                console.log(setUser);
                 // console.log(user.profile_pic);
 
             } catch (error) {
@@ -113,9 +114,9 @@ const Category = () => {
         };
 
 
-        console.log(products.images);
+        console.log(category.images);
         fetchUser();
-        fetchProducts();
+        fetchCategory();
     }, [searchTerm]);
 
     return (
@@ -123,7 +124,7 @@ const Category = () => {
             <nav className="navbar navbar-expand-lg navbar-light bg-body-tertiary mt-5 mb-3">
                 <div className="container-fluid">
                     <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                        <h2>Product list</h2>
+                        <h2>Category list</h2>
                         <form className="d-flex" role="search">
                             <input
                                 type="text"
@@ -208,39 +209,39 @@ const Category = () => {
         </tbody>
       </table> */}
             <div className='product-grid'>
-                {products.map((product, index) => (
+                {category.map((category, index) => (
                     <div class="card" key={index}>
                         <div>
-                            {product.images && product.images.split(',').map((imagePath, index) => {
+                            {/* {product.images && product.images.split(',').map((imagePath, index) => {
                                 <img src={`http://localhost:5000${product.imagePath}`} key={index} alt={`product${index}`} style={{ width: '50px', height: '50px' }} />
                                 // <img src={`http://localhost:5000${product.imagePath}`} style={{width:'50px', height:'50px'}}/>
                                 // console.log(products.imagePath);
-                            })}
+                            })} */}
                         </div>
                         <div class="card-content">
-                            <p class="title product-title">{product.name}</p>
+                            <p class="title product-title">{category.categoryName}</p>
 
                             <div class="content">
-                                {product.description}
+                                {/* {product.description} */}
                                 <br></br>
-                                {product.price}
+                                {/* {product.price} */}
                             </div>
 
                             {/* <a class="More-Details is-primary" href="product.html" target="_blank">
                                 <strong>More Details</strong>
                             </a> */}
                             <br></br>
-                            <button className="More-Details" type="button" onClick={() => navigate(`/`)}>
+                            {/* <button className="More-Details" type="button" onClick={() => navigate(`/`)}>
                             More Details
-                            </button>
+                            </button> */}
                             <br></br>
                             <br></br>
                             <div className='product-button'>
-                            <button className="Edit" type="button" onClick={() => navigate(`/updateProduct/${product.id}`)}>
+                            <button className="Edit" type="button" onClick={() => navigate(`/category/${category.id}`)}>
                                 Edit
                             </button>
 
-                            <button className="Delete" type="button" onClick={() => handleDelete(product.id)}>
+                            <button className="Delete" type="button" onClick={() => handleDelete(category.id)}>
                                 Delete
                             </button>
                             </div>

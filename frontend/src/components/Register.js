@@ -1,50 +1,45 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useState } from 'react';
 import axios from 'axios';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { useNavigate } from 'react-router-dom';
+import * as yup from 'yup';
+import { useFormik } from 'formik';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
+const RegisterSchema = yup.object().shape({
+  firstName: yup.string().required('First name is required'),
+  lastName: yup.string().required('Last name is required'),
+  email: yup.string().email('Invalid email address').required('Email is required'),
+  password: yup.string().min(6, 'Password must be at least 6 characters').required('Password is required'),
+  confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match').required('Confirm password is required'),
+  gender: yup.string().required('Gender is required'),
+  hobbies: yup.string().required('Hobbies are required'),
+  profile_pic: yup.mixed().required('Profile picture is required'),
+});
 
 const Register = () => {
-  const [errorMessage, setErrorMessage] = useState()
-  const [formData, setFormData] = useState({
-    firstName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    profile_pic: null,
-  });
-
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    navigate('/')
-  }
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    if (!formData.firstName || !formData.email || !formData.password || !formData.confirmPassword) {
-      setErrorMessage('All fields are required!');
-      return;
-    }
-
-    const { password, confirmPassword } = formData;
-    if (password !== confirmPassword) {
-      setErrorMessage("Passwords don't match");
-      console.log("Passwords don't match");
-      return;
-    }
-    else {
-        
+  const formik = useFormik({
+    initialValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      gender: '',
+      hobbies: '',
+      profile_pic: null,
+    },
+    validationSchema: RegisterSchema,
+    onSubmit: async (values, { setSubmitting }) => {
       try {
+        const formData = new FormData();
+        for (const key in values) {
+          if (values.hasOwnProperty(key)) {
+            formData.append(key, values[key]);
+          }
+        }
 
         const response = await axios.post('http://localhost:5000/api/users/register', formData, {
           headers: {
@@ -59,56 +54,66 @@ const Register = () => {
         }
       } catch (error) {
         console.error('Error registering user:', error.message || JSON.stringify(error));
+      } finally {
+        setSubmitting(false);
       }
-    }
-
-  };
+    },
+  });
 
   const handleFileChange = (event) => {
-    setFormData({
-      ...formData,
-      profile_pic: event.target.files[0],
-    });
+    formik.setFieldValue('profile_pic', event.target.files[0]);
   };
+
+  const handleLogin = (event) => {
+    navigate('/')
+  }
 
   return (
     <div className="container mt-5">
       <div className="row justify-content-center">
         <div className="col-md-6">
           <h2>Sign Up</h2>
-          {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
-          <form onSubmit={handleSubmit}>
+          {formik.errors.profile_pic && <div className="alert alert-danger">{formik.errors.profile_pic}</div>}
+          <form onSubmit={formik.handleSubmit}>
             <div className="mb-3">
               <label htmlFor="firstName" className="form-label">First Name</label>
-              <input type="text" required className="form-control" id="firstName" name="firstName" value={formData.firstName} onChange={handleInputChange} />
+              <input type="text" required className="form-control" id="firstName" name="firstName" {...formik.getFieldProps('firstName')} />
+              {formik.errors.firstName && <div className="text-danger">{formik.errors.firstName}</div>}
             </div>
             <div className="mb-3">
               <label htmlFor="lastName" className="form-label">Last Name</label>
-              <input type="text" required className="form-control" id="lastName" name="lastName" value={formData.lastName} onChange={handleInputChange} />
+              <input type="text" required className="form-control" id="lastName" name="lastName" {...formik.getFieldProps('lastName')} />
+              {formik.errors.lastName && <div className="text-danger">{formik.errors.lastName}</div>}
             </div>
             <div className="mb-3">
               <label htmlFor="email" className="form-label">Email</label>
-              <input type="email" required className="form-control" id="email" name="email" value={formData.email} onChange={handleInputChange} />
+              <input type="email" required className="form-control" id="email" name="email" {...formik.getFieldProps('email')} />
+              {formik.errors.email && <div className="text-danger">{formik.errors.email}</div>}
             </div>
             <div className="mb-3">
               <label htmlFor="password" className="form-label">Password</label>
-              <input type="password" required className="form-control" id="password" name="password" value={formData.password} onChange={handleInputChange} />
+              <input type="password" required className="form-control" id="password" name="password" {...formik.getFieldProps('password')} />
+              {formik.errors.password && <div className="text-danger">{formik.errors.password}</div>}
             </div>
             <div className="mb-3">
               <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
-              <input type="password" required className="form-control" id="confirmPassword" name="confirmPassword" value={formData.confirmPassword} onChange={handleInputChange} />
+              <input type="password" required className="form-control" id="confirmPassword" name="confirmPassword" {...formik.getFieldProps('confirmPassword')} />
+              {formik.errors.confirmPassword && <div className="text-danger">{formik.errors.confirmPassword}</div>}
             </div>
             <div className="mb-3">
               <label htmlFor="gender" className="form-label">Gender</label>
-              <input type="text" required className="form-control" id="gender" name="gender" value={formData.gender} onChange={handleInputChange} />
+              <input type="text" required className="form-control" id="gender" name="gender" {...formik.getFieldProps('gender')} />
+              {formik.errors.gender && <div className="text-danger">{formik.errors.gender}</div>}
             </div>
             <div className="mb-3">
               <label htmlFor="hobbies" className="form-label">Hobbies</label>
-              <input type="text" required className="form-control" id="hobbies" name="hobbies" value={formData.hobbies} onChange={handleInputChange} />
+              <input type="text" required className="form-control" id="hobbies" name="hobbies" {...formik.getFieldProps('hobbies')} />
+              {formik.errors.hobbies && <div className="text-danger">{formik.errors.hobbies}</div>}
             </div>
             <div className='mb-3'>
-              <label htmlFor="profile_pic" className="form-label">profile_pic</label>
+              <label htmlFor="profile_pic" className="form-label">Profile Picture</label>
               <input type="file" className="form-control" id="profile_pic" name="profile_pic" onChange={handleFileChange} />
+              {formik.errors.profile_pic && <div className="text-danger">{formik.errors.profile_pic}</div>}
             </div>
 
             <div className='button'>
@@ -122,8 +127,8 @@ const Register = () => {
               </button>
               <button
                 className="btn btn-primary btn-sm mx-1 Register"
-                type="button"
-                onClick={handleSubmit}
+                type="submit"
+                disabled={formik.isSubmitting}
               >
                 Register
               </button>
@@ -136,3 +141,5 @@ const Register = () => {
 };
 
 export default Register;
+
+

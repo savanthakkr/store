@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Form, Button, Container, Row, Col } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 const ProductForm = ({ onSubmit }) => {
     const [errorMessage, setErrorMessage] = useState('');
+    const [category, setCategory] = useState([]);
     const [formData, setFormData] = useState({
         name: '',
         description: '',
@@ -73,9 +74,48 @@ const ProductForm = ({ onSubmit }) => {
     };
 
 
-    // i want to decode token and fetch user id from token and store in product table
+    useEffect(() => {
+        const fetchCategory = async () => {
+          try {
+            const config = {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            };
+      
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', 'http://localhost:5000/api/allCategory', true);
+            xhr.setRequestHeader('Authorization', token);
+  
+      
+            xhr.onload = () => {
+              if (xhr.status === 200) {
+                const response = JSON.parse(xhr.responseText);
+      
+                if (Array.isArray(response.data)) {
+                  console.log('l : ', response);
+                  setCategory(response.data);
+                } else {
+                  console.error(' fetching books:', response.statusText);
+                }
+              } else {
+                console.error('Error fetching books:', xhr.statusText);
+              }
+            };
+      
+            xhr.onerror = () => {
+              console.error('Error fetching books:', xhr.statusText);
+            };
+      
+            xhr.send();
+          } catch (error) {
+            console.error('Error fetching books:', error);
+          }
+        };
+      
+        fetchCategory();
+      }, [token]);
 
-    // i want to fetch user id from genrated token 
 
     return (
         <Container>
@@ -112,6 +152,9 @@ const ProductForm = ({ onSubmit }) => {
                     <button className="btn btn-danger mr-2 mx-3" onClick={handleCancel}>
                         Cancel
                     </button>
+                    <div>
+                        <p>{setCategory.categoryName}</p>
+                    </div>
                     <button className="btn btn-primary mr-2 mx-3" onClick={handleSubmit}>
                         Submit
                     </button>

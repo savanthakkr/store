@@ -23,10 +23,11 @@ const createCategory = async (req, res) => {
 
 const getAllCategories = async (req, res) => {
   try {
-    
+    const userId = req.user.id;
+    console.log(userId);
     const categories = await sequelize.query(
-      'SELECT * FROM category',
-      { type: QueryTypes.SELECT }
+      'SELECT * FROM category WHERE createdBy = ?',
+      { replacements: [userId], type: QueryTypes.SELECT }
     );
     res.json(categories);
   } catch (error) {

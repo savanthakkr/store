@@ -114,9 +114,19 @@ const loginUser = async (req, res) => {
 const getUserProfile = async (req, res) => {
   try {
     const user = req.user
+    const userId = req.user.id;
+    console.log(userId);
+
+
+
+    const getUser = await sequelize.query(
+      'SELECT * FROM users WHERE id = ?',
+      { replacements: [userId], type: QueryTypes.SELECT }
+    );
+    
   
-    if (user) {
-      return res.status(200).json({ user: user });
+    if (getUser) {
+      return res.status(200).json({ user: getUser });
     }
     
   } catch (error) {
