@@ -21,6 +21,7 @@ function App() {
       <Route path="/updateProduct/:id" element={<UpdateProduct />} />
       <Route path="/register" element={<Register />} />
       <Route path='/allCategory' element={<Category/>}/>
+      <Route path='/addCategory' element={<AddCategory/>}/>
     </Routes>
   );
 }

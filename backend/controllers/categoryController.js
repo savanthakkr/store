@@ -5,11 +5,13 @@ const { QueryTypes } = require('sequelize');
 // Function to create a new category
 const createCategory = async (req, res) => {
   try {
-    const { categoryname, createdBy } = req.body;
+    const userId = req.user.id;
+    console.log(userId);
+    const { categoryName } = req.body;
     const result = await sequelize.query(
-      'INSERT INTO category (categoryname, createdBy) VALUES (?, ?)',
+      'INSERT INTO category (categoryName, createdBy) VALUES (?, ?)',
       {
-        replacements: [categoryname, createdBy],
+        replacements: [categoryName, userId],
         type: QueryTypes.INSERT
       }
     );

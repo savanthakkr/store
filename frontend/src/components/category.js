@@ -7,8 +7,8 @@ import { BsSearch } from 'react-icons/bs';
 
 const Category = () => {
     const [category, setProducts] = useState([]);
-    const [page, setPage] = useState(1);
-    const [pageSize, setPageSize] = useState(10);
+    // const [page, setPage] = useState(1);
+    // const [pageSize, setPageSize] = useState(10);
     const [searchTerm, setSearchTerm] = useState('');
     const token = localStorage.getItem('accessToken');
     const [user, setUser] = useState([])
@@ -22,11 +22,11 @@ const Category = () => {
     //     setPage(page + 1);
     // };
 
-    const handlePreviousPage = () => {
-        if (page > 1) {
-            setPage(page - 1);
-        }
-    };
+    // const handlePreviousPage = () => {
+    //     if (page > 1) {
+    //         setPage(page - 1);
+    //     }
+    // };
 
     const handleLogout = () => {
         localStorage.removeItem('accessToken');
@@ -39,6 +39,10 @@ const Category = () => {
     const handleCategory = () => {
         navigate('/allCategory');
     };
+    const addCategory = () => {
+        navigate('/addCategory');
+    };
+
 
 
 
@@ -146,6 +150,13 @@ const Category = () => {
                                 onClick={handleClick}
                             >
                                 Add Product
+                            </button>
+                            <button
+                                className="btn btn-primary btn-sm"
+                                type="button"
+                                onClick={addCategory}
+                            >
+                                Add Category
                             </button>
                             <button className="btn btn-primary btn-sm mx-3" type="button" onClick={handleCategory}>Category</button>
                             <button className="btn btn-primary btn-sm mx-3" type="button" onClick={handleLogout}>Log Out</button>
