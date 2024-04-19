@@ -39,6 +39,9 @@ const ProductTable = () => {
     const handleCategory = () => {
         navigate('/allCategory');
     };
+    const handlepassword = () => {
+        navigate('/sendOTP')
+    }
 
 
 
@@ -147,6 +150,7 @@ const ProductTable = () => {
                                 Add Product
                             </button>
                             <button className="btn btn-primary btn-sm mx-3" type="button" onClick={handleCategory}>Category</button>
+                            <button className="btn btn-primary btn-sm mx-3" type="button" onClick={handlepassword}>change password</button>
                             <button className="btn btn-primary btn-sm mx-3" type="button" onClick={handleLogout}>Log Out</button>
                             {/* <button className="btn btn-primary btn-sm mx-5" type="button" onClick={handlePreviousPage} disabled={page === 1}>
                                 Previous Page

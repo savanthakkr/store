@@ -48,7 +48,7 @@ const Register = () => {
         });
         if (response.status >= 200) {
           console.log('Registered successfully.');
-          navigate('/');
+          navigate('/otp');
         } else {
           console.log(`Unexpected status code: ${response.status}`);
         }
