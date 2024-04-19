@@ -61,7 +61,7 @@ const createProduct = async (req, res) => {
     const createdBy = req.user.id;
     const userRole = req.user.userRole;
     console.log(userRole);
-    console.log(images)
+    console.log(images);
     
     const dirExists = fs.existsSync(`public/assets/`);
     if (!dirExists) {

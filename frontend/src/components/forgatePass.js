@@ -10,9 +10,8 @@ const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const ForgatePass = () => {
     const location = useLocation()
     const navigate = useNavigate();
-    const [password, setPassword] = useState('');
-    const [Cpassword, setCPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [password, setPassowrd] = useState('');
 
     useEffect(()=>{
         if(location.pathname === '/'){
@@ -21,107 +20,91 @@ const ForgatePass = () => {
  
     })
 
-    const handleRegister = () => {
-        navigate('/register');
+    const [formData, setFormData] = useState({
+        password: ''
+    });
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
     };
+
     const token = localStorage.getItem('accessToken');
 
-    const handleSubmit = async (event, id) => {
-        event.preventDefault();
-        // try {
-    
-        //     if(password == Cpassword){
-        //         const xhr = new XMLHttpRequest();
-        //         xhr.open('PUT', `http://localhost:5000/api/users/updatePass`, true);
-        //         xhr.setRequestHeader('Authorization', token);
-        //         xhr.setRequestHeader('Content-Type', 'application/json');
-          
-        //         xhr.onload = () => {
-        //           if (xhr.status === 200) {
-        //             const response = JSON.parse(xhr.responseText);
-        //             console.log(response.data);
-        //             navigate('/allProducts');
-        //           } else {
-        //             console.error('Error updating password:', xhr.statusText);
-        //           }
-        //         };
-          
-        //         xhr.onerror = () => {
-        //           console.error('Error updating password:', xhr.statusText);
-        //         };
-          
-        //         xhr.send(
-        //           JSON.stringify({
-        //             password,
-        //           })
-        //       );
-        //     }else{
-        //         console.error('Error updating password:');
-        //     }
-          
-        // } catch (error) {
-        //   console.error('Error updating password:', error);
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        // Check if email or password is empty
+        if (!password ) {
+            setErrorMessage('Please enter both email and password.');
+            return;
+        }
+        console.log(setPassowrd);
+
+
+        // Check if email is valid
+        // if (!EMAIL_REGEX.test(email)) {
+        //     setEmailError('Please enter a valid email address.');
+        //     return;
         // }
 
         try {
-
-
-            if(password != Cpassword){
-                console.log('No password match.');
-            }
-
-            const response = await axios.put(`http://localhost:5000/api/users/updatePass`, {password}, {
+            const response = await axios.put('http://localhost:5000/api/users/updatePass', {password}, {
                 headers: {
                     'Authorization': token
                 }
             });
+            console.log(password);
 
             if (response.status === 200) {
-                navigate('/allProducts');
+
+                // const token = response.data.token;
+                // localStorage.setItem('accessToken', token);
+                navigate('/allProduct');
 
             } else {
-                setErrorMessage('password failed. Please try again.');
-                console.error('password failed:', response.data.message);
+                setErrorMessage('Login failed. Please try again.');
+                console.error('Login failed:', response.data.message);
             }
         } catch (error) {
-            console.error('An error occurred during password:', error);
-            setErrorMessage('An error occurred during password. Please try again later.');
+            console.error('An error occurred during login:', error);
+            setErrorMessage('An error occurred during login. Please try again later.');
         }
-      };
+    };
 
     return (
-        <div className="login-form ">
-                <h3 className="text-center">Login</h3>
-                {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
-                <Form onSubmit={handleSubmit} className="mt-3">
-                    <Form.Group controlId="otp">
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control
-                            type="Password"
-                            placeholder="Enter your Password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </Form.Group>
-
-                    <Form.Group controlId="otp">
-                        <Form.Label>Password</Form.Label>
-                        <Form.Control
-                            type="Password"
-                            placeholder="Enter your Password Again"
-                            value={Cpassword}
-                            onChange={(e) => setCPassword(e.target.value)}
-                        />
-                    </Form.Group>
-
-                    <Button variant="primary" type="submit" className="w-100 mt-3">
-                        Login
-                    </Button>
-                    <Button variant="primary" className="w-100 mt-3" onClick={handleRegister}>
-                        SignUp
-                    </Button>
-                </Form>
+        <Container>
+            <h1 className="text-center mt-5">Change Password</h1>
+            <div className="justify-content-center mt-5">
+                <div md={6}>
+                    {errorMessage && <div className="alert alert-danger mt-3">{errorMessage}</div>}
+                    <div>
+                        <div className="form-group mx-3 mt-3">
+                            <label htmlFor="password">password</label>
+                            <input type="password" className="form-control" id="password" name="password" value={password}
+                            onChange={(e) => {
+                                setPassowrd(e.target.value);
+                                // setEmailError('');
+                            }}/>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <div className='allproduct-button mt-5'>
+            {/* <button className="btn btn-primary" onClick={handleShowAllProducts}>
+                        Show All Categories
+                    </button> */}
+                    {/* <button className="btn btn-danger mr-2 mx-3" onClick={handleCancel}>
+                        Cancel
+                    </button> */}
+                    {/* <div>
+                        <p>{setCategory.categoryName}</p>
+                    </div> */}
+                    <button className="btn btn-primary mr-2 mx-3" onClick={handleSubmit}>
+                        Submit
+                    </button>
+            </div>
+            
+        </Container>
     );
 };
 

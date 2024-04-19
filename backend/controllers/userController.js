@@ -321,13 +321,10 @@ const getUserProfile = async (req, res) => {
     const userId = req.user.id;
     console.log(userId);
 
-
-
     const getUser = await sequelize.query(
       'SELECT * FROM users WHERE id = ?',
       { replacements: [userId], type: QueryTypes.SELECT }
     );
-
 
     if (getUser) {
       return res.status(200).json({ user: getUser });
@@ -389,9 +386,11 @@ const updatepassword = async (req, res) => {
     console.log(userId);
     const { password	 } = req.body;
 
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     await sequelize.query(
-      'UPDATE users SET password	 = ? WHERE email = ?',
-      { replacements: [password, 	email], type: QueryTypes.UPDATE }
+      'UPDATE users SET password = ? WHERE email = ?',
+      { replacements: [hashedPassword, email], type: QueryTypes.UPDATE }
     );
     res.json({ message: 'password updated successfully' });
   } catch (error) {

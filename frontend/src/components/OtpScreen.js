@@ -64,12 +64,8 @@ const OTPscreen = () => {
                         'Authorization': token
                     }
                 });
-                // const response = await axios.post('http://localhost:5000/api/users/otpEmail', { otp });
 
                 if (response.status === 200) {
-
-                    // const token = response.data.token;
-                    // localStorage.setItem('accessToken', token);
                     navigate('/forgatePass');
 
                 } else {

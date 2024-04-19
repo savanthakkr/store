@@ -18,10 +18,6 @@ const ProductTable = () => {
         setSearchTerm(event.target.value);
     };
 
-    // const handleNextPage = () => {
-    //     setPage(page + 1);
-    // };
-
     const handlePreviousPage = () => {
         if (page > 1) {
             setPage(page - 1);
