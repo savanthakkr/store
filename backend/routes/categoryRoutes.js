@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { verifyToken } = require("../middlewares/roleMiddleware");
 
-const { createCategory, getAllCategories, getCategoryById, updateCategory, deleteCategory } = require('../controllers/categoryController');
+const {getCategory, createCategory, getAllCategories, getCategoryById, updateCategory, deleteCategory } = require('../controllers/categoryController');
 
 // Create a new category
 router.post('/createCategory',verifyToken, createCategory);
@@ -10,8 +10,8 @@ router.post('/createCategory',verifyToken, createCategory);
 // Get all categories
 router.get('/allCategory',verifyToken, getAllCategories);
 
-// Get a specific category by ID
-//router.get('/category/:id', getCategoryById);
+// Get all categories
+router.get('/getCategory',verifyToken, getCategory);
 
 // Update a category
 router.put('/category/:id',verifyToken, updateCategory); 

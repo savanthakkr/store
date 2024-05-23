@@ -9,6 +9,7 @@ const ProductTable = () => {
     const [products, setProducts] = useState([]);
     const [page, setPage] = useState(1);
     const [pageSize, setPageSize] = useState(10);
+    const [category, setCategory] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const token = localStorage.getItem('accessToken');
     const [user, setUser] = useState([])
@@ -31,6 +32,9 @@ const ProductTable = () => {
 
     const handleClick = () => {
         navigate('/addProduct');
+    };
+    const handleCategoryAll = () => {
+        navigate('/CategoryAll');
     };
     const handleCategory = () => {
         navigate('/allCategory');
@@ -90,13 +94,14 @@ const ProductTable = () => {
 
         const fetchUser = async (id) => {
             try {
+                console.log(token);
                 const token = localStorage.getItem('accessToken');
                 if (!token) {
                     console.log('No token found. User is not authenticated.');
                     navigate("/");
                     return;
                 }
-                
+
 
                 const headers = {
                     'Authorization': token
@@ -145,6 +150,7 @@ const ProductTable = () => {
                             >
                                 Add Product
                             </button>
+                            <button className="btn btn-primary btn-sm mx-3" type="button" onClick={handleCategoryAll}>Category All</button>
                             <button className="btn btn-primary btn-sm mx-3" type="button" onClick={handleCategory}>Category</button>
                             <button className="btn btn-primary btn-sm mx-3" type="button" onClick={handlepassword}>change password</button>
                             <button className="btn btn-primary btn-sm mx-3" type="button" onClick={handleLogout}>Log Out</button>
@@ -160,7 +166,7 @@ const ProductTable = () => {
                                 height="30"
                                 width="30"
                                 alt="user" />
-                                <p class="title product-title">{user.firstName}</p>
+                            <p class="title product-title">{user.firstName}</p>
                         </div>
                     </div>
                 </div>
@@ -232,18 +238,18 @@ const ProductTable = () => {
                             </a> */}
                             <br></br>
                             <button className="More-Details" type="button" onClick={() => navigate(`/`)}>
-                            More Details
+                                More Details
                             </button>
                             <br></br>
                             <br></br>
                             <div className='product-button'>
-                            <button className="Edit" type="button" onClick={() => navigate(`/updateProduct/${product.id}`)}>
-                                Edit
-                            </button>
+                                <button className="Edit" type="button" onClick={() => navigate(`/updateProduct/${product.id}`)}>
+                                    Edit
+                                </button>
 
-                            <button className="Delete" type="button" onClick={() => handleDelete(product.id)}>
-                                Delete
-                            </button>
+                                <button className="Delete" type="button" onClick={() => handleDelete(product.id)}>
+                                    Delete
+                                </button>
                             </div>
                         </div>
                     </div>

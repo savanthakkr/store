@@ -22,11 +22,7 @@ const OTPscreen = () => {
 
     })
 
-    const handleRegister = () => {
-        navigate('/register');
-    };
 
-    // localStorage.setItem('accessToken', token);
     const token = localStorage.getItem('accessToken');
     console.log(token);
 
@@ -59,7 +55,7 @@ const OTPscreen = () => {
             }
         } else {
             try {
-                const response = await fetch(`http://localhost:5000/api/users/otpEmail`, {otp}, {
+                const response = await fetch(`http://localhost:5000/api/users/otpEmail`, { otp }, {
                     headers: {
                         'Authorization': token
                     }
@@ -83,25 +79,12 @@ const OTPscreen = () => {
 
     return (
         <div className="login-form ">
-            <h3 className="text-center">Login</h3>
+            <h3 className="text-center">Please Enter OTP</h3>
             {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
             <Form onSubmit={handleSubmit} className="mt-3">
-                {/* <Form.Group controlId="formUsername">
-                        <Form.Label>Email</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="Enter your username"
-                            value={email}
-                            onChange={(e) => {
-                                setEmail(e.target.value);
-                                setEmailError('');
-                            }}
-                        />
-                        {emailError && <Form.Text className="text-danger">{emailError}</Form.Text>}
-                    </Form.Group> */}
 
                 <Form.Group controlId="otp">
-                    <Form.Label>Password</Form.Label>
+                    <Form.Label>OTP</Form.Label>
                     <Form.Control
                         type="otp"
                         placeholder="Enter your otp"
@@ -111,10 +94,7 @@ const OTPscreen = () => {
                 </Form.Group>
 
                 <Button variant="primary" type="submit" className="w-100 mt-3">
-                    Login
-                </Button>
-                <Button variant="primary" className="w-100 mt-3" onClick={handleRegister}>
-                    SignUp
+                    Confirm
                 </Button>
             </Form>
         </div>

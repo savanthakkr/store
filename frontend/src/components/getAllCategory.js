@@ -5,7 +5,7 @@ import './component.css';
 import axios from 'axios';
 import { BsSearch } from 'react-icons/bs';
 
-const Category = () => {
+const CategoryAll = () => {
     const [category, setProducts] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const token = localStorage.getItem('accessToken');
@@ -30,9 +30,6 @@ const Category = () => {
     const addCategory = () => {
         navigate('/addCategory');
     };
-
-
-
 
     const handleDelete = (id) => {
         const xhr = new XMLHttpRequest();
@@ -61,21 +58,12 @@ const Category = () => {
                     navigate('/');
                 }
 
-                const xhr = new XMLHttpRequest();
-                xhr.open('GET', 'http://localhost:5000/api/allCategory', true);
-                xhr.setRequestHeader('Authorization', token);
-                xhr.onreadystatechange = function () {
-                    if (xhr.readyState === XMLHttpRequest.DONE) {
-                        if (xhr.status === 200) {
-                            const response = JSON.parse(xhr.responseText);
-                            setProducts(response.filter((category) => category.categoryName.toLowerCase().includes(searchTerm.toLowerCase())));
-                            console.log(category.imagePath);
-                        } else {
-                            console.error('Error fetching products:', xhr.statusText);
-                        }
-                    }
+                const headers = {
+                    'Authorization': token
                 };
-                xhr.send();
+
+                const response = await axios.get('http://localhost:5000/api/getCategory', { headers });
+                setProducts(response.data);
             } catch (error) {
                 console.error('Error fetching Category:', error);
             }
@@ -90,7 +78,6 @@ const Category = () => {
                     return;
                 }
 
-
                 const headers = {
                     'Authorization': token
                 };
@@ -99,14 +86,11 @@ const Category = () => {
                 setUser(response);
                 console.log(setUser);
                 // console.log(user.profile_pic);
-
             } catch (error) {
                 console.error('Error fetching user data:', error);
             }
         };
 
-
-        console.log(category.images);
         fetchUser();
         fetchCategory();
     }, [searchTerm]);
@@ -164,93 +148,24 @@ const Category = () => {
                     </div>
                 </div>
             </nav>
-            {/* <table className="table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Category ID</th>
-            <th>Price</th>
-            <th>Images</th>
-          </tr>
-        </thead>
-        <tbody>
-          {products.map((product, index) => (
-            <tr key={index}>
-              <td>{product.name}</td>
-              <td>{product.description}</td>
-              <td>{product.categoryId}</td>
-              <td>{product.price}</td>
-              <td>
-                {Array.isArray(product.images) &&
-                  product.images.map((image, i) => (
-                    <img key={i} src={image} alt={`Product ${i}`} style={{ maxWidth: '100px' }} />
-                  ))}
-                  <div>
-                    {product.images && product.images.split(',').map((imagePath, index) => {
-                        <img src={`http://localhost:5000${imagePath}`} key={index} alt={`product${index}`} style={{width:'50px', height:'50px'}}/>
-                    })}
-                  </div>
-                  
-              </td>
-              <td>
-                <button className="btn btn-warning btn-sm" type="button" onClick={() => navigate(`/updateProduct/${product.id}`)}>
-                  Edit
-                </button>
-              </td>
-              <td>
-                <button className="btn btn-danger btn-sm" type="button" onClick={() => handleDelete(product.id)}>
-                  Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table> */}
             <div className='product-grid'>
-                {category.map((category, index) => (
-                    <div class="card" key={index}>
-                        <div>
-                            {/* {product.images && product.images.split(',').map((imagePath, index) => {
-                                <img src={`http://localhost:5000${product.imagePath}`} key={index} alt={`product${index}`} style={{ width: '50px', height: '50px' }} />
-                                // <img src={`http://localhost:5000${product.imagePath}`} style={{width:'50px', height:'50px'}}/>
-                                // console.log(products.imagePath);
-                            })} */}
-                        </div>
-                        <div class="card-content">
-                            <p class="title product-title">{category.categoryName}</p>
-
-                            <div class="content">
-                                {/* {product.description} */}
-                                <br></br>
-                                {/* {product.price} */}
-                            </div>
-
-                            {/* <a class="More-Details is-primary" href="product.html" target="_blank">
-                                <strong>More Details</strong>
-                            </a> */}
-                            <br></br>
-                            {/* <button className="More-Details" type="button" onClick={() => navigate(`/`)}>
-                            More Details
-                            </button> */}
-                            <br></br>
-                            <br></br>
-                            <div className='product-button'>
-                                <button className="Edit" type="button" onClick={() => navigate(`/category/${category.id}`)}>
-                                    Edit
-                                </button>
-
-                                <button className="Delete" type="button" onClick={() => handleDelete(category.id)}>
-                                    Delete
-                                </button>
-                            </div>
+                <div class="card">
+                    <div class="card-content">
+                        <p class="title product-title">Category List</p>
+                        <div class="content">
+                            <select>
+                                {category.map((category, index) => (
+                                    <option key={index} value={category.id}>
+                                        {category.categoryName}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                     </div>
-                ))}
-
+                </div>
             </div>
         </div>
     );
 };
 
-export default Category;
+export default CategoryAll;

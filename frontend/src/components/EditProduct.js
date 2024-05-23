@@ -6,18 +6,18 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const UpdateProduct = () => {
 
   const navigate = useNavigate();
-  const {id} = useParams();
+  const { id } = useParams();
 
   const token = localStorage.getItem('accessToken');
   // const bookId = localStorage.getItem('accessBookId');
 
- 
+
 
   const [productData, setproductData] = useState({});
 
   useEffect(() => {
     const fetchproductData = async () => {
-  
+
       try {
         const response = await fetch(`http://localhost:5000/api/productById/${id}`, {
           headers: {
@@ -85,14 +85,14 @@ const UpdateProduct = () => {
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <label htmlFor="id" className="form-label">
-              ID  
+              ID
             </label>
             <input
               type="text"
               className="form-control"
               id="id"
               name="id"
-              value={productData.id || ''} 
+              value={productData.id || ''}
               readOnly
             />
           </div>
@@ -118,7 +118,7 @@ const UpdateProduct = () => {
           </div>
           <div className="mb-3">
             <label htmlFor="createdBy" className="form-label">created By</label>
-            <input type="text" className="form-control" id="createdBy" name="createdBy" value={productData.createdBy } onChange={handleChange} />
+            <input type="text" className="form-control" id="createdBy" name="createdBy" value={productData.createdBy} onChange={handleChange} />
           </div>
           <button type="submit" className="btn btn-primary">Update product</button>
         </form>

@@ -13,11 +13,11 @@ const ForgatePass = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [password, setPassowrd] = useState('');
 
-    useEffect(()=>{
-        if(location.pathname === '/'){
+    useEffect(() => {
+        if (location.pathname === '/') {
             localStorage.removeItem('accessToken')
         }
- 
+
     })
 
     const [formData, setFormData] = useState({
@@ -34,7 +34,7 @@ const ForgatePass = () => {
         e.preventDefault();
 
         // Check if email or password is empty
-        if (!password ) {
+        if (!password) {
             setErrorMessage('Please enter both email and password.');
             return;
         }
@@ -48,7 +48,7 @@ const ForgatePass = () => {
         // }
 
         try {
-            const response = await axios.put('http://localhost:5000/api/users/updatePass', {password}, {
+            const response = await axios.put('http://localhost:5000/api/users/updatePass', { password }, {
                 headers: {
                     'Authorization': token
                 }
@@ -81,29 +81,29 @@ const ForgatePass = () => {
                         <div className="form-group mx-3 mt-3">
                             <label htmlFor="password">password</label>
                             <input type="password" className="form-control" id="password" name="password" value={password}
-                            onChange={(e) => {
-                                setPassowrd(e.target.value);
-                                // setEmailError('');
-                            }}/>
+                                onChange={(e) => {
+                                    setPassowrd(e.target.value);
+                                    // setEmailError('');
+                                }} />
                         </div>
                     </div>
                 </div>
             </div>
             <div className='allproduct-button mt-5'>
-            {/* <button className="btn btn-primary" onClick={handleShowAllProducts}>
+                {/* <button className="btn btn-primary" onClick={handleShowAllProducts}>
                         Show All Categories
                     </button> */}
-                    {/* <button className="btn btn-danger mr-2 mx-3" onClick={handleCancel}>
+                {/* <button className="btn btn-danger mr-2 mx-3" onClick={handleCancel}>
                         Cancel
                     </button> */}
-                    {/* <div>
+                {/* <div>
                         <p>{setCategory.categoryName}</p>
                     </div> */}
-                    <button className="btn btn-primary mr-2 mx-3" onClick={handleSubmit}>
-                        Submit
-                    </button>
+                <button className="btn btn-primary mr-2 mx-3" onClick={handleSubmit}>
+                    Submit
+                </button>
             </div>
-            
+
         </Container>
     );
 };

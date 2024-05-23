@@ -2,7 +2,6 @@ const bcrypt = require('bcrypt');
 const { sequelize } = require('../config/database');
 const { QueryTypes } = require('sequelize');
 const jwt = require('jsonwebtoken');
-const verifyToken = require('../middlewares/authMiddleware');
 const fs = require('fs');
 const path = require('path');
 const nodemailer = require('nodemailer');
@@ -116,91 +115,83 @@ const sendEmail = async (options) => {
   });
 
   const mailOptions = {
-      from: 'sponda.netclues@gmail.com',
-      to: options.to,
-      subject: options.subject,
-      html: options.message,
+    from: 'sponda.netclues@gmail.com',
+    to: options.to,
+    subject: options.subject,
+    html: options.message,
   };
 
   await transporter.sendMail(mailOptions);
 };
 
-const sendPasswordOTP = async(req, res) => {
+const sendPasswordOTP = async (req, res) => {
   try {
     const { email } = req.body;
-    const otp = generateOTPS(); 
+    const otp = generateOTPS();
     console.log(otp);
 
-    
+
 
     // Send OTP via email
     await sendEmail({
-        to: email,
-        subject: 'Your OTP',
-        message: `<p>Your OTP is: <strong>${otp}</strong></p>`,
+      to: email,
+      subject: 'Your OTP',
+      message: `<p>Your OTP is: <strong>${otp}</strong></p>`,
     });
 
     res.status(200).json({ success: true, message: 'OTP sent successfully' });
-} catch (error) {
+  } catch (error) {
     console.error('Error sending OTP:', error);
     res.status(500).json({ success: false, error: 'Internal server error' });
+  }
 }
-}
-
 
 
 const registerUser = async (req, res) => {
   try {
     const { firstName, lastName, email, password, gender, hobbies } = req.body;
 
-    // Generate a random OTP
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const otp = genrateOTP();
-    console.log(otp);
-
-    // const otp_instance = [otp, expiration_time]
-    //   otp: otp,
-    //   expiration_time: expiration_time
-    // });
-
-    // Send the OTP to the user's email ID
-    const mailOptions = {
-      from: 'sponda.netclues@gmail.com',
-      to: email,
-      subject: 'OTP for User Registration',
-      text: `Your OTP is ${otp}`
-    };
-
-    transporter.sendMail(mailOptions, async (error, info) => {
-      if (error) {
-        console.error('Error sending OTP:', error);
-        res.status(500).json({ error: 'Internal server error' });
-      } else {
-        console.log('OTP sent:', info.response);
-        console.log(otp);
-
-        const profile_pic = req.files.profile_pic
-
-        let savePath = `/public/assets/${Date.now()}.${profile_pic.name.split(".").pop()}`
-
-        // Save the OTP in the database along with the user's details
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const result = await sequelize.query(
-          'INSERT INTO users (firstName, lastName, email, password, gender, hobbies, profile_pic) VALUES (?, ?, ?, ?, ?, ?, ?)',
-          {
-            replacements: [firstName, lastName, email, hashedPassword, gender, hobbies, savePath],
-            type: QueryTypes.INSERT
-          }
-        );
-
-        res.json({ message: `User created! Please check your email for the OTP.` });
+    // Save the user's details in the database
+    const result = await sequelize.query(
+      'INSERT INTO users (firstName, lastName, email, password, gender, hobbies, profile_pic) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      {
+        replacements: [firstName, lastName, email, hashedPassword, gender, hobbies, req.file.buffer],
+        type: QueryTypes.INSERT
       }
-    });
+    );
+
+    res.json({ message: `User created!` });
   } catch (error) {
     console.error('Error registering user:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+// const registerUser = async (req, res) => {
+//   try {
+//     const { firstName, lastName, email, password, gender, hobbies } = req.body;
+
+//     // Hash the password
+//     const hashedPassword = await bcrypt.hash(password, 10);
+
+//     // Save the user's details in the database
+//     const result = await sequelize.query(
+//       'INSERT INTO users (firstName, lastName, email, password, gender, hobbies) VALUES (?, ?, ?, ?, ?, ?)',
+//       {
+//         replacements: [firstName, lastName, email, hashedPassword, gender, hobbies],
+//         type: QueryTypes.INSERT
+//       }
+//     );
+
+//     res.json({ message: `User created!` });
+//   } catch (error) {
+//     console.error('Error registering user:', error);
+//     res.status(500).json({ error: 'Internal server error' });
+//   }
+// };
 
 
 const OTPVerifyEmail = async (req, res) => {
@@ -314,6 +305,43 @@ const loginUser = async (req, res) => {
   }
 };
 
+
+const adminLoginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const [existingUser] = await sequelize.query('SELECT * FROM admin WHERE email = ?',
+      { replacements: [email], type: QueryTypes.SELECT });
+
+    if (existingUser) {
+
+      const user = existingUser;
+
+
+      if (password == user.password) {
+
+        const token = generateToken(user);
+        const userId = user.id;
+        const userRole = user.userRole;
+
+        return res.status(200).send({ message: 'Login success!', token: token, userId: userId, userRole: userRole });
+      } else {
+        return res.status(401).send({ message: 'Incorrect password!' });
+      }
+    } else {
+      return res.status(404).send({ message: 'Email not found! Sign up!' });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: 'Error in login check api!',
+      error
+    });
+  }
+};
+
+
+
 // Function to get user profile
 const getUserProfile = async (req, res) => {
   try {
@@ -384,7 +412,7 @@ const updatepassword = async (req, res) => {
     const userId = req.params.id;
     const email = req.user.email;
     console.log(userId);
-    const { password	 } = req.body;
+    const { password } = req.body;
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -405,6 +433,7 @@ module.exports = {
   getUserProfile,
   getImage,
   OTPVerify,
+  adminLoginUser,
   sendPasswordOTP,
   OTPVerifyEmail,
   updatepassword,

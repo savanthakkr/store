@@ -38,11 +38,26 @@ const getAllCategories = async (req, res) => {
   }
 };
 
+const getCategory = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    console.log(userId);
+    const categories = await sequelize.query(
+      'SELECT * FROM category ',
+      { type: QueryTypes.SELECT }
+    );
+    res.json(categories);
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 // Function to get a specific category by ID
 const getCategoryById = async (req, res) => {
   try {
     const categoryId = req.params.id;
- 
+
     const category = await sequelize.query(
       'SELECT * FROM categories WHERE id = ?',
       { replacements: [categoryId], type: QueryTypes.SELECT }
@@ -56,6 +71,9 @@ const getCategoryById = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+
+
 
 // Function to update a category
 const updateCategory = async (req, res) => {
@@ -83,23 +101,30 @@ const deleteCategory = async (req, res) => {
     console.log(userId);
 
     const [existingId] = await sequelize.query('SELECT * FROM category WHERE id = ?',
-    { replacements: [categoryId], type: QueryTypes.SELECT });
+      { replacements: [categoryId], type: QueryTypes.SELECT });
 
-    if(existingId){
+    if (existingId) {
       await sequelize.query(
         'DELETE FROM category WHERE id = ? AND createdBy = ?',
         { replacements: [categoryId, userId], type: QueryTypes.DELETE }
       );
       res.json({ message: 'Category deleted successfully' });
-    }else{
+    } else {
       res.json({ message: 'enter valid category id' });
     }
-    
-    
+
+
   } catch (error) {
     console.error('Error deleting category:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
 
-module.exports = {createCategory, getAllCategories, getCategoryById, updateCategory, deleteCategory}
+module.exports = { 
+  getCategory, 
+  createCategory, 
+  getAllCategories, 
+  getCategoryById, 
+  updateCategory, 
+  deleteCategory 
+};

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {  Container,  } from 'react-bootstrap';
+import { Container, } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 const AddCategory = ({ onSubmit }) => {
@@ -69,20 +69,20 @@ const AddCategory = ({ onSubmit }) => {
                 </div>
             </div>
             <div className='allproduct-button mt-5'>
-            <button className="btn btn-primary" onClick={handleShowAllProducts}>
-                        Show All Categories
-                    </button>
-                    <button className="btn btn-danger mr-2 mx-3" onClick={handleCancel}>
-                        Cancel
-                    </button>
-                    {/* <div>
+                <button className="btn btn-primary" onClick={handleShowAllProducts}>
+                    Show All Categories
+                </button>
+                <button className="btn btn-danger mr-2 mx-3" onClick={handleCancel}>
+                    Cancel
+                </button>
+                {/* <div>
                         <p>{setCategory.categoryName}</p>
                     </div> */}
-                    <button className="btn btn-primary mr-2 mx-3" onClick={handleSubmit}>
-                        Submit
-                    </button>
+                <button className="btn btn-primary mr-2 mx-3" onClick={handleSubmit}>
+                    Submit
+                </button>
             </div>
-            
+
         </Container>
 
     );

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const productController = require('../controllers/productController');
-const { createProduct, getAllProducts, getProductById, updateProduct, deleteProduct, searchProducts} = productController;
+const { createProduct, addProductImage, getAllProducts, getProductById, updateProduct, deleteProduct, searchProducts} = productController;
 const { verifyToken } = require("../middlewares/roleMiddleware");
 
 // Create a new product

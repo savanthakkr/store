@@ -2,8 +2,6 @@ const { QueryTypes } = require('sequelize');
 const { sequelize } = require('../config/database');
 const fs = require('fs');
 const path = require('path');
-const jwt = require('jsonwebtoken');
-const { verifyToken } = require('../middlewares/roleMiddleware');
 
 
 
@@ -25,7 +23,7 @@ const { verifyToken } = require('../middlewares/roleMiddleware');
 //     }
 
 //     if (images == undefined || images == null) throw new Error("file not found!");
-    
+
 //     let savePath = `/public/assets/product/${Date.now()}.${images.name.split(".").pop()}`
 
 //     await new Promise((resolve, reject) => {
@@ -46,7 +44,7 @@ const { verifyToken } = require('../middlewares/roleMiddleware');
 //     );
 //     res.json({ message: 'Product created!', id: result[0] });
 
-    
+
 //   } catch (error) {
 //     console.error('Error creating product:', error);
 //     res.status(500).json({ error: 'Internal server error' });
@@ -62,7 +60,7 @@ const createProduct = async (req, res) => {
     const userRole = req.user.userRole;
     console.log(userRole);
     console.log(images);
-    
+
     const dirExists = fs.existsSync(`public/assets/`);
     if (!dirExists) {
       fs.mkdirSync(`public/assets/`, { recursive: true });
@@ -77,11 +75,11 @@ const createProduct = async (req, res) => {
         throw new Error("Image or image name is undefined");
       }
 
-    const savePath = `/public/assets/${Date.now()}.${image.name.split(".").pop()}`;
+      const savePath = `/public/assets/${Date.now()}.${image.name.split(".").pop()}`;
 
       // Move the file to the destination
-    await new Promise((resolve, reject) => {
-      image.mv(path.join(__dirname, ".." + savePath), (err) => {
+      await new Promise((resolve, reject) => {
+        image.mv(path.join(__dirname, ".." + savePath), (err) => {
           if (err) {
             reject(new Error("Error in uploading"));
           } else {
@@ -107,7 +105,6 @@ const createProduct = async (req, res) => {
 };
 
 
-// Error creating product: Error: Positional replacement (?) 6 has no entry in the replacement map (replacements[6] is undefined).
 
 
 const getAllProducts = async (req, res) => {
@@ -115,6 +112,9 @@ const getAllProducts = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const pageSize = parseInt(req.query.pageSize) || 10;
     const offset = (page - 1) * pageSize;
+
+    const userId = req.user.id;
+    console.log(userId, "sdjsdsjdhj");
 
     const products = await sequelize.query(
       `SELECT * FROM product LIMIT ${pageSize} OFFSET ${offset}`,
@@ -250,4 +250,11 @@ const searchProducts = async (req, res) => {
   }
 };
 
-module.exports = { createProduct, getAllProducts, getProductById, updateProduct, deleteProduct, searchProducts };
+module.exports = { 
+  createProduct, 
+  getAllProducts, 
+  getProductById, 
+  updateProduct, 
+  deleteProduct, 
+  searchProducts 
+};

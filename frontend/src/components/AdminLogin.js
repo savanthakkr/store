@@ -7,7 +7,7 @@ import '../App.css'
 
 const EMAIL_REGEX = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-const Login = () => {
+const AdminLogin = () => {
     const location = useLocation()
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
@@ -21,14 +21,6 @@ const Login = () => {
         }
 
     })
-
-    const handleRegister = () => {
-        navigate('/register');
-    };
-
-    const handleAdminLogin = () => {
-        navigate('/AdminLogin');
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -46,7 +38,7 @@ const Login = () => {
         }
 
         try {
-            const response = await axios.post('http://localhost:5000/api/users/login', { email, password });
+            const response = await axios.post('http://localhost:5000/api/users/adminLoginUser', { email, password });
 
             if (response.status === 200) {
 
@@ -94,17 +86,11 @@ const Login = () => {
                 </Form.Group>
 
                 <Button variant="primary" type="submit" className="w-100 mt-3">
-                    Login
-                </Button>
-                <Button variant="primary" className="w-100 mt-3" onClick={handleRegister}>
-                    SignUp
-                </Button>
-                <Button variant="primary" className="w-100 mt-3" onClick={handleAdminLogin}>
-                    AdminLogin
+                    Admin Login
                 </Button>
             </Form>
         </div>
     );
 };
 
-export default Login;
+export default AdminLogin;
